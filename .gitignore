@@ -1,0 +1,10 @@
+*.o
+*.out
+*.exe
+*.a
+*.so
+*.dll
+*.idea
+*.vscode
+build/
+.DS_Store
