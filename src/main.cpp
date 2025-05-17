@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include <sstream>
+#include <string>
 
 void printQuineTable(const std::vector<std::vector<bool>>& table, 
                     const std::vector<Implicant>& implicants,
@@ -22,35 +24,36 @@ void printQuineTable(const std::vector<std::vector<bool>>& table,
     }
 }
 
+std::vector<int> readNumbers() {
+    std::vector<int> numbers;
+    std::string line;
+    std::getline(std::cin, line);
+    std::istringstream iss(line);
+    int num;
+    while (iss >> num) {
+        numbers.push_back(num);
+    }
+    return numbers;
+}
+
 int main() {
     int numVariables;
     std::cout << "Enter number of variables: ";
     std::cin >> numVariables;
+    std::cin.ignore(); // Clear newline
     
     BooleanFunction func(numVariables);
     
-    int numMinterms;
-    std::cout << "Enter number of minterms: ";
-    std::cin >> numMinterms;
-    
     std::cout << "Enter minterms (space-separated): ";
-    for (int i = 0; i < numMinterms; ++i) {
-        int minterm;
-        std::cin >> minterm;
+    auto minterms = readNumbers();
+    for (int minterm : minterms) {
         func.addMinterm(minterm);
     }
     
-    int numDontCares;
-    std::cout << "Enter number of don't cares: ";
-    std::cin >> numDontCares;
-    
-    if (numDontCares > 0) {
-        std::cout << "Enter don't cares (space-separated): ";
-        for (int i = 0; i < numDontCares; ++i) {
-            int dontCare;
-            std::cin >> dontCare;
-            func.addDontCare(dontCare);
-        }
+    std::cout << "Enter don't cares (space-separated): ";
+    auto dontCares = readNumbers();
+    for (int dontCare : dontCares) {
+        func.addDontCare(dontCare);
     }
     
     QuineMcCluskey qm(func);
