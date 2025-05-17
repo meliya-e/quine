@@ -1,6 +1,26 @@
 #include "QuineMcCluskey.h"
 #include <iostream>
 #include <vector>
+#include <iomanip>
+
+void printQuineTable(const std::vector<std::vector<bool>>& table, 
+                    const std::vector<Implicant>& implicants,
+                    const std::vector<int>& minterms) {
+    std::cout << "\nQuine's Table:" << std::endl;
+    std::cout << std::setw(15) << "Implicant";
+    for (int m : minterms) {
+        std::cout << std::setw(5) << m;
+    }
+    std::cout << std::endl;
+    
+    for (size_t i = 0; i < table.size(); ++i) {
+        std::cout << std::setw(15) << implicants[i].binary;
+        for (bool covered : table[i]) {
+            std::cout << std::setw(5) << (covered ? "X" : " ");
+        }
+        std::cout << std::endl;
+    }
+}
 
 int main() {
     int numVariables;
@@ -44,6 +64,16 @@ int main() {
     std::cout << "\nEssential Prime Implicants:" << std::endl;
     auto essential = qm.findEssentialPrimeImplicants();
     for (const auto& imp : essential) {
+        std::cout << func.toBooleanExpression(imp.binary) << std::endl;
+    }
+    
+    // Build and print Quine's table
+    auto table = qm.buildQuineTable(essential);
+    printQuineTable(table, essential, func.getMinterms());
+    
+    std::cout << "\nMinimal Coverage:" << std::endl;
+    auto minimalCoverage = qm.findMinimalCoverage();
+    for (const auto& imp : minimalCoverage) {
         std::cout << func.toBooleanExpression(imp.binary) << std::endl;
     }
     
